@@ -1,8 +1,6 @@
 Laravel Chatwork
 ===
 
-[![Build Status](https://travis-ci.org/yokuru/laravel-chatwork.svg?branch=master)](https://travis-ci.org/yokuru/laravel-chatwork)
-[![Coverage Status](https://coveralls.io/repos/github/yokuru/laravel-chatwork/badge.svg?branch=master)](https://coveralls.io/github/yokuru/laravel-chatwork?branch=master)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 [Laravel Notification](https://laravel.com/docs/notifications) driver for Chatwork.
@@ -12,13 +10,13 @@ Laravel Chatwork
 With [Composer](https://getcomposer.org/):
 
 ```
-composer require yokuru/laravel-chatwork
+composer require a-yasui/laravel-chatwork
 ```
 
 After installing the package, please publish the configuration file.
 
 ```
-php artisan vendor:publish --provider="Yokuru\Chatwork\ServiceProvider"
+php artisan vendor:publish --provider="ATYasu\Chatwork\ServiceProvider"
 ```
 
 ## Usage
@@ -94,7 +92,7 @@ $message->to('999999')
     ->text('FYI');
 ```
 
-![sample](https://github.com/yokuru/laravel-chatwork/raw/docs/images/sample.png)
+![sample](https://github.com/a-yasui/laravel-chatwork/raw/docs/images/sample.png)
 
 ### Mention specific user
 
@@ -102,7 +100,7 @@ $message->to('999999')
 $message->to('999999');
 ```
 
-![to](https://github.com/yokuru/laravel-chatwork/raw/docs/images/to.png)
+![to](https://github.com/a-yasui/laravel-chatwork/raw/docs/images/to.png)
 
 ### Mention all users in the room
 
@@ -110,7 +108,7 @@ $message->to('999999');
 $message->toAll();
 ```
 
-![toall](https://github.com/yokuru/laravel-chatwork/raw/docs/images/to_all.png)
+![toall](https://github.com/a-yasui/laravel-chatwork/raw/docs/images/to_all.png)
 
 ### Simple text
 
@@ -118,7 +116,7 @@ $message->toAll();
 $message->text('This is simple text message.');
 ```
 
-![text](https://github.com/yokuru/laravel-chatwork/raw/docs/images/text.png)
+![text](https://github.com/a-yasui/laravel-chatwork/raw/docs/images/text.png)
 
 ### Information
 
@@ -126,7 +124,7 @@ $message->text('This is simple text message.');
 $message->info('This is information.');
 ```
 
-![info](https://github.com/yokuru/laravel-chatwork/raw/docs/images/info.png)
+![info](https://github.com/a-yasui/laravel-chatwork/raw/docs/images/info.png)
 
 #### With title
 
@@ -134,7 +132,7 @@ $message->info('This is information.');
 $message->info('This is information.', 'Information title');
 ```
 
-![info_with_title](https://github.com/yokuru/laravel-chatwork/raw/docs/images/info_with_title.png)
+![info_with_title](https://github.com/a-yasui/laravel-chatwork/raw/docs/images/info_with_title.png)
 
 ## License
 
