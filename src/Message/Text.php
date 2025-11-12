@@ -1,14 +1,11 @@
 <?php
-namespace Yokuru\Chatwork\Message;
+namespace ATYasu\Chatwork\Message;
 
-use Yokuru\Chatwork\Message;
+use ATYasu\Chatwork\Message;
 
 class Text implements Message
 {
-    /**
-     * @var string
-     */
-    private $message;
+    private string $message;
 
     public function __construct(string $message)
     {

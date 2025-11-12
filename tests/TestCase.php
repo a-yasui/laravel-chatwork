@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Yokuru\ChatworkTest;
+namespace ATYasu\Chatwork\Test;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {

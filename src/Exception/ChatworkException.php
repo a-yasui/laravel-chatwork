@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Yokuru\Chatwork;
+namespace ATYasu\Chatwork\Exception;
 
 class ChatworkException extends \Exception
 {

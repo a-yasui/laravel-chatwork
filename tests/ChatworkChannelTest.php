@@ -2,28 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Yokuru\ChatworkTest;
+namespace ATYasu\Chatwork\Test;
 
+use ATYasu\Chatwork\Exception\RoomIdEmptyException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Config;
 use Mockery\MockInterface;
-use Yokuru\Chatwork\ChatworkChannel;
-use Yokuru\Chatwork\ChatworkException;
-use Yokuru\Chatwork\ChatworkMessage;
-use Yokuru\Chatwork\ChatworkNotification;
+use ATYasu\Chatwork\ChatworkChannel;
+use ATYasu\Chatwork\ChatworkMessage;
+use ATYasu\Chatwork\ChatworkNotification;
+use ATYasu\Chatwork\Exception\ChatworkException;
 
 class ChatworkChannelTest extends TestCase
 {
-    /**
-     * @var ChatworkChannel
-     */
-    private $target;
-
-    /**
-     * @var MockInterface
-     */
-    private $clientMock;
+    private ChatworkChannel $target;
+    private MockInterface $clientMock;
 
     /**
      * @var object
@@ -101,4 +95,16 @@ class ChatworkChannelTest extends TestCase
         $this->target->send($this->mockNotifiable, $this->mockNotification);
     }
 
+    public function testRoomEmptyError()
+    {
+        $this->mockNotifiable = new class(){
+            public function routeNotificationFor($channel)
+            {
+                return '';
+            }
+        };
+
+        $this->expectException(RoomIdEmptyException::class);
+        $this->target->send($this->mockNotifiable, $this->mockNotification);
+    }
 }

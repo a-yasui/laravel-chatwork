@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Yokuru\ChatworkTest;
+namespace ATYasu\Chatwork\Test;
 
-use Yokuru\Chatwork\ChatworkChannel;
-use Yokuru\Chatwork\ChatworkMessage;
-use Yokuru\Chatwork\ChatworkNotification;
+use ATYasu\Chatwork\ChatworkChannel;
+use ATYasu\Chatwork\ChatworkMessage;
+use ATYasu\Chatwork\ChatworkNotification;
 
 class ChatworkNotificationTest extends TestCase
 {

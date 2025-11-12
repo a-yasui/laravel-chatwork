@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Yokuru\ChatworkTest\Message;
+namespace ATYasu\Chatwork\Test\Message;
 
-use Yokuru\Chatwork\Message\Info;
-use Yokuru\ChatworkTest\TestCase;
+use ATYasu\Chatwork\Message\Info;
+use ATYasu\Chatwork\Test\TestCase;
 
 class InfoTest extends TestCase
 {
