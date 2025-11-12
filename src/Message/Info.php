@@ -1,23 +1,22 @@
 <?php
-namespace Yokuru\Chatwork\Message;
 
-use Yokuru\Chatwork\Message;
+namespace ATYasu\Chatwork\Message;
+
+use ATYasu\Chatwork\Message;
 
 class Info implements Message
 {
     /**
      * Information body
-     * @var string
      */
-    private $body;
+    private string $body;
 
     /**
      * Information title
-     * @var string|null
      */
-    private $title;
+    private ?string $title;
 
-    public function __construct(string $body, string $title = null)
+    public function __construct(string $body, ?string $title = null)
     {
         $this->body = $body;
         $this->title = $title;

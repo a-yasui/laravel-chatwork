@@ -1,7 +1,7 @@
 <?php
-namespace Yokuru\Chatwork\Message;
+namespace ATYasu\Chatwork\Message;
 
-use Yokuru\Chatwork\Message;
+use ATYasu\Chatwork\Message;
 
 class ToAll implements Message
 {

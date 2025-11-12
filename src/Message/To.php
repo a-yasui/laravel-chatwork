@@ -1,14 +1,11 @@
 <?php
-namespace Yokuru\Chatwork\Message;
+namespace ATYasu\Chatwork\Message;
 
-use Yokuru\Chatwork\Message;
+use ATYasu\Chatwork\Message;
 
 class To implements Message
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
     public function __construct(string $id)
     {

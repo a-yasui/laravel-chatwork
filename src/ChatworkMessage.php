@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Yokuru\Chatwork;
+namespace ATYasu\Chatwork;
 
-use Yokuru\Chatwork\Message\Info;
-use Yokuru\Chatwork\Message\Text;
-use Yokuru\Chatwork\Message\To;
-use Yokuru\Chatwork\Message\ToAll;
+use ATYasu\Chatwork\Message\Info;
+use ATYasu\Chatwork\Message\Text;
+use ATYasu\Chatwork\Message\To;
+use ATYasu\Chatwork\Message\ToAll;
 
 class ChatworkMessage implements Message
 {
     /**
      * @var Message[]
      */
-    public $messages = [];
+    public array $messages = [];
 
     /**
-     * @var int
+     * 通知するbotの既読状態 0 => 未読, 1 => 既読
      */
-    public $selfUnreadStatus;
+    public int $selfUnreadStatus = 0;
 
     /**
      * Set a self unread flag
@@ -48,7 +48,7 @@ class ChatworkMessage implements Message
      * @param string|null $title
      * @return ChatworkMessage
      */
-    public function info(string $message, string $title = null): self
+    public function info(string $message, ?string $title = null): self
     {
         $this->messages[] = new Info($message, $title);
         return $this;

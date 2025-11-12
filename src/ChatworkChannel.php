@@ -1,29 +1,37 @@
 <?php
 declare(strict_types=1);
 
-namespace Yokuru\Chatwork;
+namespace ATYasu\Chatwork;
 
+use ATYasu\Chatwork\Exception\ChatworkException;
+use ATYasu\Chatwork\Exception\RoomIdEmptyException;
 use GuzzleHttp\Client;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
 
 class ChatworkChannel
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-    public function send($notifiable, ChatworkNotification $notification)
+    public function send($notifiable, Notification $notification)
     {
+        if (method_exists($notification, "toChatwork") === false) {
+            // 何もしない
+            return ;
+        }
+
         $chatworkMessage = $notification->toChatwork($notifiable);
         $roomId = $notifiable->routeNotificationFor('chatwork');
+        if(empty($roomId)){
+            throw new RoomIdEmptyException();
+        }
 
-        try {
+        try{
             $this->client->post('https://api.chatwork.com/v2/rooms/' . $roomId . '/messages', [
                 'headers' => [
                     'X-ChatWorkToken' => Config::get('chatwork.token'),
@@ -33,9 +41,8 @@ class ChatworkChannel
                     'self_unread' => $chatworkMessage->selfUnreadStatus,
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e){
             throw new ChatworkException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
     }
-
 }
