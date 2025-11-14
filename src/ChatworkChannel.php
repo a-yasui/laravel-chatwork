@@ -28,6 +28,8 @@ class ChatworkChannel
         return $this->client->post('https://api.chatwork.com/v2/rooms/' . $roomId . '/messages', [
             'headers' => [
                 'X-ChatWorkToken' => Config::get('chatwork.token'),
+                'accept' => 'application/json',
+                'content-type' => 'application/x-www-form-urlencoded',
             ],
             'form_params' => [
                 'body' => $chatworkMessage->message(),
