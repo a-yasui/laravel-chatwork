@@ -32,7 +32,7 @@ class ChatworkChannel
         }
 
         try{
-            $this->client->post('https://api.chatwork.com/v2/rooms/' . $roomId . '/messages', [
+            $response = $this->client->post('https://api.chatwork.com/v2/rooms/' . $roomId . '/messages', [
                 'headers' => [
                     'X-ChatWorkToken' => Config::get('chatwork.token'),
                 ],
@@ -40,7 +40,16 @@ class ChatworkChannel
                     'body' => $chatworkMessage->message(),
                     'self_unread' => $chatworkMessage->selfUnreadStatus,
                 ],
+                'http_errors' => false
             ]);
+
+            if ($response->getStatusCode() === 400) {
+                throw new ChatworkException(
+                    $response->getBody()->getContents(),
+                    $response->getStatusCode(),
+                    (new \Exception)->getPrevious()
+                );
+            }
         } catch (\Throwable $e){
             throw new ChatworkException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }

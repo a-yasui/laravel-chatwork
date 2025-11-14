@@ -89,7 +89,20 @@ class ChatworkChannelTest extends TestCase
         $this->clientMock
             ->shouldReceive('post')
             ->once()
-            ->andThrow(new \Exception());
+            ->andReturnUsing(function ($url, $params){
+                $this->assertEquals('https://api.chatwork.com/v2/rooms/999999/messages', $url);
+                $this->assertEquals('test_token', $params['headers']['X-ChatWorkToken']);
+                $this->assertEquals('test message', $params['form_params']['body']);
+                $this->assertEquals(1, $params['form_params']['self_unread']);
+
+                return new Response(
+                    400,
+                    [
+                        'content-type' => 'application/json'
+                    ],
+                    \json_encode(["errors" => ["Invalid Request"]])
+                );
+            });
 
         $this->expectException(ChatworkException::class);
         $this->target->send($this->mockNotifiable, $this->mockNotification);
