@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace ATYasu\Chatwork\Test;
 
+use ATYasu\Chatwork\Exception\AccessTokenInsufficientScopeException;
+use ATYasu\Chatwork\Exception\ChatworkTokenLimitException;
+use ATYasu\Chatwork\Exception\HttpException;
+use ATYasu\Chatwork\Exception\InvalidAPITokenException;
 use ATYasu\Chatwork\Exception\RoomIdEmptyException;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Config;
@@ -104,7 +109,7 @@ class ChatworkChannelTest extends TestCase
                 );
             });
 
-        $this->expectException(ChatworkException::class);
+        $this->expectException(HttpException::class);
         $this->target->send($this->mockNotifiable, $this->mockNotification);
     }
 
@@ -118,6 +123,93 @@ class ChatworkChannelTest extends TestCase
         };
 
         $this->expectException(RoomIdEmptyException::class);
+        $this->target->send($this->mockNotifiable, $this->mockNotification);
+    }
+
+    public function testInvalidAPIToken()
+    {
+        Carbon::setTestNow('2025-11-01 12:23:34');
+
+        $this->clientMock
+            ->shouldReceive('post')
+            ->once()
+            ->andReturnUsing(function ($url, $params){
+                $this->assertEquals('https://api.chatwork.com/v2/rooms/999999/messages', $url);
+                $this->assertEquals('test_token', $params['headers']['X-ChatWorkToken']);
+                $this->assertEquals('test message', $params['form_params']['body']);
+                $this->assertEquals(1, $params['form_params']['self_unread']);
+
+                return new Response(
+                    401,
+                    [
+                        'content-type' => 'application/json',
+                        'x-ratelimit-reset' => now()->format('U'),
+                        'x-ratelimit-remaining' => '0',
+                        'x-ratelimit-limit' => '1'
+                    ],
+                    \json_encode(["errors" => ["Invalid API token"]])
+                );
+            });
+
+        $this->expectException(InvalidAPITokenException::class);
+        $this->target->send($this->mockNotifiable, $this->mockNotification);
+    }
+
+    public function testAccessTokenInsufficient()
+    {
+        Carbon::setTestNow('2025-11-01 12:23:34');
+
+        $this->clientMock
+            ->shouldReceive('post')
+            ->once()
+            ->andReturnUsing(function ($url, $params){
+                $this->assertEquals('https://api.chatwork.com/v2/rooms/999999/messages', $url);
+                $this->assertEquals('test_token', $params['headers']['X-ChatWorkToken']);
+                $this->assertEquals('test message', $params['form_params']['body']);
+                $this->assertEquals(1, $params['form_params']['self_unread']);
+
+                return new Response(
+                    403,
+                    [
+                        'content-type' => 'application/json',
+                        'x-ratelimit-reset' => now()->format('U'),
+                        'x-ratelimit-remaining' => '0',
+                        'x-ratelimit-limit' => '1'
+                    ],
+                    \json_encode(["errors" => ["Access token has insufficient scope"]])
+                );
+            });
+
+        $this->expectException(AccessTokenInsufficientScopeException::class);
+        $this->target->send($this->mockNotifiable, $this->mockNotification);
+    }
+
+    public function testSendRateLimitError()
+    {
+        Carbon::setTestNow('2025-11-01 12:23:34');
+
+        $this->clientMock
+            ->shouldReceive('post')
+            ->once()
+            ->andReturnUsing(function ($url, $params){
+                $this->assertEquals('https://api.chatwork.com/v2/rooms/999999/messages', $url);
+                $this->assertEquals('test_token', $params['headers']['X-ChatWorkToken']);
+                $this->assertEquals('test message', $params['form_params']['body']);
+                $this->assertEquals(1, $params['form_params']['self_unread']);
+
+                return new Response(
+                    429,
+                    [
+                        'content-type' => 'application/json',
+                        'x-ratelimit-reset' => now()->addSeconds(61)->format('U'),
+                        'x-ratelimit-remaining' => '0',
+                        'x-ratelimit-limit' => '1'
+                    ],
+                    \json_encode(["errors" => ["Rate limit exceeded"]])
+                );
+            });
+
+        $this->expectException(ChatworkTokenLimitException::class);
         $this->target->send($this->mockNotifiable, $this->mockNotification);
     }
 }
